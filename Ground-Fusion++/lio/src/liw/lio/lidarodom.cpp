@@ -1472,7 +1472,7 @@ namespace zjloc
                while (!img_time_buffer_.empty() && !img_buffer_.empty() && img_time_buffer_.front() <= end_time)
                {
                     ++count;
-                    if (count > 2 && img_time_buffer_.front() >= begin_time)
+                    if (img_time_buffer_.front() >= begin_time)
                     {
                          images.emplace_back(img_buffer_.front());
                          times.emplace_back(img_time_buffer_.front());

@@ -127,6 +127,27 @@ void compressed_image_cbk(const sensor_msgs::CompressedImageConstPtr &msg)
     img.release();
 }
 
+void image_cbk(const sensor_msgs::ImageConstPtr &msg)
+{
+    std::cout << "image_cbk" << std::endl;
+    cv::Mat img;
+    if (msg->encoding == "rgb8") {
+        img = cv::Mat(msg->height, msg->width, CV_8UC3, const_cast<void*>(reinterpret_cast<const void*>(&msg->data[0])));
+    } else if (msg->encoding == "bgr8") {
+        img = cv::Mat(msg->height, msg->width, CV_8UC3, const_cast<void*>(reinterpret_cast<const void*>(&msg->data[0])));
+    } else if (msg->encoding == "bayer_rggb8") {
+        cv_bridge::CvImagePtr cv_ptr = cv_bridge::toCvCopy(msg, sensor_msgs::image_encodings::BAYER_RGGB8);
+        cv::Mat bayer = cv_ptr->image;
+        cv::cvtColor(bayer, img, cv::COLOR_BayerRG2RGB);
+//        cv::imwrite("/home/lurvelly/Workspace/bayer.jpg", bayer);
+//        cv::cvtColor(bayer, img, cv::COLOR_BayerRG2GRAY);
+//        cv::imwrite("/home/lurvelly/Workspace/gray.jpg", img);
+//        exit(0);
+    }
+    lio->pushData(img.clone(), msg->header.stamp.toSec());
+    img.release();
+}
+
 void updateStatus(const std_msgs::Int32::ConstPtr &msg)
 {
     int type = msg->data;
@@ -382,7 +403,8 @@ int main(int argc, char **argv)
                               }, 
                               ros::TransportHints().tcpNoDelay());
 
-    ros::Subscriber sub_image = nh.subscribe( image_topic, 200, compressed_image_cbk);
+    // ros::Subscriber sub_image = nh.subscribe( image_topic, 200, compressed_image_cbk);
+    ros::Subscriber sub_image = nh.subscribe( image_topic, 200, image_cbk);
 
     std::thread measurement_process(&zjloc::lidarodom::run, lio);
 

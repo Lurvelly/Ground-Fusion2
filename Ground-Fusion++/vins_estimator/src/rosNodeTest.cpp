@@ -252,7 +252,7 @@ void gnss_meas_callback(const GnssMeasMsgConstPtr &meas_msg)
 
 cv::Mat getImageFromMsg(const sensor_msgs::ImageConstPtr &img_msg)
 {
-    cv_bridge::CvImageConstPtr ptr;
+    cv_bridge::CvImagePtr ptr;
     if (img_msg->encoding == "8UC1")
     {
         sensor_msgs::Image img;
@@ -264,6 +264,14 @@ cv::Mat getImageFromMsg(const sensor_msgs::ImageConstPtr &img_msg)
         img.data = img_msg->data;
         img.encoding = "mono8";
         ptr = cv_bridge::toCvCopy(img, sensor_msgs::image_encodings::MONO8);
+    } else if (img_msg->encoding == "bayer_rggb8")
+    {
+        ptr = cv_bridge::toCvCopy(img_msg, sensor_msgs::image_encodings::BAYER_RGGB8);
+        cv::Mat bayer = ptr->image;
+        cv::Mat gray;
+        cv::cvtColor(bayer, gray, cv::COLOR_BayerRG2GRAY);
+        ptr->image = gray.clone();
+        ptr->encoding = sensor_msgs::image_encodings::MONO8;
     }
     else
         ptr = cv_bridge::toCvCopy(img_msg, sensor_msgs::image_encodings::MONO8);

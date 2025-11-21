@@ -1,0 +1,30 @@
+<launch>
+  
+  <arg name="project" default="groundfusion2"/>
+  <!-- <param name="/use_sim_time" value="true" /> -->
+  <arg name="rviz" default="true" />
+  <arg name="config_file" default="$(find groundfusion2)/config/america.yaml" />
+  <param name="config_file" value="$(arg config_file)" />
+
+  <!-- subscribe topic from bags -->
+  <!-- <node pkg="$(arg project)"  type="$(arg project)_eskf"  name="$(arg project)_eskf"  output="screen" launch-prefix="xterm -e gdb"/> -->
+  <node pkg="$(arg project)" type="$(arg project)_eskf" name="$(arg project)_eskf" output="screen" required="true" args="--config_yaml $(arg config_file)" />
+
+  <!-- rosbag_io  -->
+  <!-- <node pkg="$(arg project)"  type="$(arg project)_eskf_rosbag"  name="$(arg project)_eskf_rosbag"  output="screen" launch-prefix="xterm -e gdb"/> -->
+  <!-- <node pkg="$(arg project)" type="$(arg project)_eskf_rosbag" name="$(arg project)_eskf_rosbag" output="screen" required="true"/> -->
+
+<!--   <node pkg="vins" type="vins_node" name="vins_node" output="screen" args="$(find groundfusion2)/../config/realsense/gf_america.yaml" /> -->
+
+<!--   <group if="$(arg rviz)"> -->
+<!--     <node launch-prefix="nice" pkg="rviz" type="rviz" name="rviz" args="-d $(find groundfusion2)/launch/rviz.rviz" /> -->
+<!--   </group> -->
+
+  <include file="$(find im_mesh)/launch/mapping_america.launch">
+    <arg name="rviz" value="false" />
+  </include>
+
+<!-- <node pkg="tf" type="static_transform_publisher" name="word2map_tf"  args="0 0 0 0 0 0 /world /map 10" />
+<node pkg="tf" type="static_transform_publisher" name="bask_to_laser"  args="0 0 0 0 0 0 /base_link /rslidar 10" /> -->
+
+</launch>
