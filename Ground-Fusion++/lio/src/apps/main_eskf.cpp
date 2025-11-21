@@ -129,7 +129,6 @@ void compressed_image_cbk(const sensor_msgs::CompressedImageConstPtr &msg)
 
 void image_cbk(const sensor_msgs::ImageConstPtr &msg)
 {
-    std::cout << "image_cbk" << std::endl;
     cv::Mat img;
     if (msg->encoding == "rgb8") {
         img = cv::Mat(msg->height, msg->width, CV_8UC3, const_cast<void*>(reinterpret_cast<const void*>(&msg->data[0])));
