@@ -32,6 +32,7 @@ find_package(catkin REQUIRED COMPONENTS
   livox_ros_driver  ## for livox
   eigen_conversions
   message_generation
+  cv_bridge
 )
 add_definitions(-DROOT_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\")
 
@@ -43,7 +44,8 @@ catkin_package(
 
 include(cmake/packages.cmake)
 include_directories(
-  include 
+  include
+        ${catkin_INCLUDE_DIRS}
   ${PROJECT_SOURCE_DIR}
   ${PROJECT_SOURCE_DIR}/src
   ${PROJECT_SOURCE_DIR}/thirdparty/sophus

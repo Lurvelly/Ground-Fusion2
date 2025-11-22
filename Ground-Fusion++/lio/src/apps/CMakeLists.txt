@@ -1,11 +1,17 @@
 add_executable(${PROJECT_NAME}_eskf main_eskf.cpp  
                                common_utility.cpp)
+
+find_package(catkin REQUIRED COMPONENTS
+        cv_bridge
+)
+
 target_link_libraries(${PROJECT_NAME}_eskf 
                          ${PROJECT_NAME}.common
                          ${PROJECT_NAME}.pre
                          ${PROJECT_NAME}.liw
                          ${PROJECT_NAME}.algo
                          ${third_party_libs}
+        ${catkin_LIBRARIES}
                         )
 
 add_executable(${PROJECT_NAME}_eskf_rosbag main_eskf_rosbag.cpp  
